@@ -1,0 +1,49 @@
+﻿<Application x:Class="QLocalPing.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:QLocalPing"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <Style TargetType="ContextMenu">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ContextMenu">
+                        <Border Margin="10" Background="White" CornerRadius="10">
+                            <Border.Effect>
+                                <DropShadowEffect Color="Black" Opacity="0.3" ShadowDepth="0"/>
+                            </Border.Effect>
+                            <Grid>
+                                <ItemsPresenter/>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+                    <Style TargetType="MenuItem">
+                        <Setter Property="MinWidth" Value="150"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="MenuItem">
+                                    <Border Padding="15,10" Background="{TemplateBinding Background}" CornerRadius="10">
+                                        <Grid>
+                                            <HeaderedContentControl Background="Transparent" Header="{TemplateBinding Header}"/>
+                                        </Grid>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="DodgerBlue"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Application.Resources>
+</Application>

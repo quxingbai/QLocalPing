@@ -1,0 +1,188 @@
+﻿<UserControl x:Class="QLocalPing.Views.OnlineIpListPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:QLocalPing.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.Resources>
+            <Style TargetType="ListBox">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            </Style>
+            <Style TargetType="ListBoxItem">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            </Style>
+        </Grid.Resources>
+        <ListBox ItemsSource="{Binding NetworkGroups}">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Width" Value="380"/>
+                    <Setter Property="Background" Value="WhiteSmoke"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="BorderBrush" Value="Transparent"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListBoxItem">
+                                <Grid>
+                                    <Border Padding="5" CornerRadius="5" Margin="10" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                                        <Grid>
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="auto"/>
+                                                    <RowDefinition Height="*"/>
+                                                </Grid.RowDefinitions>
+                                                <Border Background="Transparent" Padding="10,5" CornerRadius="5">
+                                                    <Grid>
+                                                        <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                            <TextBlock Text="{Binding GroupName}" FontSize="18" Foreground="DodgerBlue" Name="TEXT_GroupName"/>
+                                                            <Border Background="{Binding ElementName=TEXT_GroupName,Path=Foreground}" Padding="4,2" Margin="10,0"  VerticalAlignment="Center" HorizontalAlignment="Center" CornerRadius="2">
+                                                                <TextBlock Foreground="White" FontWeight="Bold">
+                                                                    <Run Text="{Binding OnlineTarges.Count,Mode=OneWay}"/>
+                                                                    <Run Text="家"/>
+                                                                </TextBlock>
+                                                            </Border>
+                                                        </WrapPanel>
+
+                                                        <Button Cursor="Hand" HorizontalAlignment="Right" VerticalAlignment="Top" ToolTip="刷新"  Command="{Binding Parent.RefrushCommand}" CommandParameter="{Binding NetworkGroup}">
+                                                            <Button.Template>
+                                                                <ControlTemplate TargetType="Button">
+                                                                    <Border Padding="4" Background="Transparent">
+                                                                        <ContentPresenter/>
+                                                                    </Border>
+                                                                </ControlTemplate>
+                                                            </Button.Template>
+                                                            <WrapPanel>
+                                                                <TextBlock Text="刷新" Margin="5,0" FontWeight="Bold" Foreground="Gray"/>
+                                                            </WrapPanel>
+                                                        </Button>
+                                                    </Grid>
+                                                </Border>
+                                                <Border Grid.Row="1" Padding="15,10" Background="White" Margin="5" CornerRadius="5">
+                                                    <Border.ContextMenu>
+                                                        <ContextMenu>
+                                                            <MenuItem Header="复制IP" Command="{Binding Parent.CopyAddressCommand}"/>
+                                                        </ContextMenu>
+                                                    </Border.ContextMenu>
+                                                    <ListBox ItemsSource="{Binding OnlineTarges}" x:Name="LIST_Onlines" SelectedItem="{Binding Parent.SelectedNetworkTargetViewModel,Mode=OneWayToSource}">
+                                                        <ListBox.Template>
+                                                            <ControlTemplate TargetType="ListBox">
+                                                                <Border>
+                                                                    <Grid>
+
+                                                                        <Grid>
+                                                                            <Grid.RowDefinitions>
+                                                                                <RowDefinition Height="auto"/>
+                                                                                <RowDefinition Height="*"/>
+                                                                            </Grid.RowDefinitions>
+                                                                            <Border Padding="0,5" Margin="0,0,0,5" BorderThickness="0,0,0,0.5" BorderBrush="#50000000">
+                                                                                <UniformGrid Columns="3">
+                                                                                    <TextBlock Text="IP" HorizontalAlignment="Center"/>
+                                                                                    <Border Margin="0">
+                                                                                        <TextBlock Text="TTL" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                                    </Border>
+                                                                                    <TextBlock HorizontalAlignment="Center" Text="延迟"/>
+                                                                                </UniformGrid>
+                                                                            </Border>
+                                                                            <Border Grid.Row="1">
+                                                                                <ItemsPresenter/>
+                                                                            </Border>
+                                                                        </Grid>
+                                                                        <Border Background="White" Visibility="Collapsed" Name="BD_CopyAddressing" Opacity="0">
+                                                                            <TextBlock Text="复制成功" Foreground="DodgerBlue" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                        </Border>
+                                                                    </Grid>
+                                                                </Border>
+                                                                <ControlTemplate.Triggers>
+                                                                    <DataTrigger Binding="{Binding Parent.IsIsNowCopyAddressing}" Value="True">
+                                                                        <DataTrigger.EnterActions>
+                                                                            <BeginStoryboard>
+                                                                                <Storyboard>
+                                                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BD_CopyAddressing" Storyboard.TargetProperty="Visibility">
+                                                                                        <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Visible}"/>
+                                                                                    </ObjectAnimationUsingKeyFrames>
+                                                                                    <DoubleAnimation Duration="0:0:0.25" To="1" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="BD_CopyAddressing"/>
+                                                                                </Storyboard>
+                                                                            </BeginStoryboard>
+                                                                        </DataTrigger.EnterActions>
+                                                                        <DataTrigger.ExitActions>
+                                                                            <BeginStoryboard>
+                                                                                <Storyboard>
+                                                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BD_CopyAddressing" Storyboard.TargetProperty="Visibility">
+                                                                                        <DiscreteObjectKeyFrame KeyTime="0:0:1" Value="{x:Static Visibility.Collapsed}"/>
+                                                                                    </ObjectAnimationUsingKeyFrames>
+                                                                                    <DoubleAnimation Duration="0:0:0.8" To="0" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="BD_CopyAddressing"/>
+                                                                                </Storyboard>
+                                                                            </BeginStoryboard>
+                                                                        </DataTrigger.ExitActions>
+                                                                    </DataTrigger>
+                                                                </ControlTemplate.Triggers>
+                                                            </ControlTemplate>
+                                                        </ListBox.Template>
+                                                        <ListBox.ItemContainerStyle>
+                                                            <Style TargetType="ListBoxItem">
+                                                                <Setter Property="Background" Value="White"/>
+                                                                <Setter Property="BorderThickness" Value="0"/>
+                                                                <Setter Property="BorderBrush" Value="Transparent"/>
+                                                                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                                                <Setter Property="Template">
+                                                                    <Setter.Value>
+                                                                        <ControlTemplate TargetType="ListBoxItem">
+                                                                            <Border Padding="8" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="5">
+                                                                                <Grid>
+                                                                                    <UniformGrid Columns="3">
+                                                                                        <TextBlock Text="{Binding IPAddress}" />
+                                                                                        <Border Margin="0">
+                                                                                            <TextBlock Text="{Binding TTL}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                                        </Border>
+                                                                                        <TextBlock HorizontalAlignment="Center">
+                                                                                    <Run Text="{Binding PingRoundtripMS}"/>
+                                                                                    <Run Text="ms"/>
+                                                                                        </TextBlock>
+                                                                                    </UniformGrid>
+                                                                                </Grid>
+                                                                            </Border>
+                                                                            <ControlTemplate.Triggers>
+                                                                                <Trigger Property="IsSelected" Value="True">
+                                                                                    <Setter Property="Background" Value="DodgerBlue"/>
+                                                                                    <Setter Property='Foreground' Value="White"/>
+                                                                                </Trigger>
+                                                                            </ControlTemplate.Triggers>
+                                                                        </ControlTemplate>
+                                                                    </Setter.Value>
+                                                                </Setter>
+                                                            </Style>
+                                                        </ListBox.ItemContainerStyle>
+                                                    </ListBox>
+                                                </Border>
+                                            </Grid>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                    </Trigger>
+                                    <DataTrigger Binding="{Binding Parent.IsNowRefrushing}" Value="True">
+                                        <Setter Property="Foreground" Value="OrangeRed" TargetName="TEXT_GroupName"/>
+                                    </DataTrigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListBox.ItemContainerStyle>
+        </ListBox>
+    </Grid>
+</UserControl>
